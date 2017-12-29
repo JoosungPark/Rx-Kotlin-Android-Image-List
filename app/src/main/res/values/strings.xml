@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Rx Kotlin Image List</string>
+
+    <string name="Search_Image_Finder_Hint">Input keyword to find images.</string>
+    <string name="No_Keyword">There is no keyword. Please input keyword and tab search button.</string>
 </resources>
