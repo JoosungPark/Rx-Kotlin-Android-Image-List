@@ -2,10 +2,8 @@ package sdop.image.list.model
 
 import android.databinding.BindingAdapter
 import android.widget.ImageView
-import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import sdop.image.list.R
-import sdop.image.list.util.LogUtil
 
 /**
  *
@@ -19,6 +17,8 @@ private val imagePlaceHolder = R.color.basic_divider
 fun loadImage(view: ImageView, url: String?, width: String?, height: String?) {
     if (width == null || height == null) throw IllegalArgumentException("width or height contain null value. width : $width height : $height")
     val scaledSize = recommendSize(width.toInt(), height.toInt(), 700, 100)
+
+    view.layoutParams.height = scaledSize.second
 
     url?.let {
         Picasso.with(view.context)
