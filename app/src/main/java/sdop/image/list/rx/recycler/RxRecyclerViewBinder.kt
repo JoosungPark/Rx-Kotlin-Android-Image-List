@@ -57,16 +57,8 @@ class RxRecyclerViewBinder private constructor(private val recyclerView: Recycle
     }
 
     private val staggeredGridScrollListener = object : RecyclerView.OnScrollListener() {
-        private var latestScrolled = System.currentTimeMillis()
-
-        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            latestScrolled = System.currentTimeMillis()
-        }
-
         override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
-//&& latestScrolled + 1000 > System.currentTimeMillis()
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE ) {
                 val adapter = dataSource.rxAdapterForTypes!!
 
