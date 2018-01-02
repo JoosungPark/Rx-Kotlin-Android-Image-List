@@ -13,6 +13,7 @@ import sdop.image.list.rx.addTo
 import sdop.image.list.rx.recycler.RxRecyclerCell
 import sdop.image.list.rx.recycler.RxRecyclerCellStyle
 import sdop.image.list.rx.recycler.RxRecyclerViewBinder
+import sdop.image.list.util.LogUtil
 
 /**
  *
@@ -21,10 +22,11 @@ import sdop.image.list.rx.recycler.RxRecyclerViewBinder
 data class ImageCell(private val fragment: BaseFragment, private val emitter: UIEventPublisher? = null, private val image: ImageModel) : RxRecyclerCell(layoutResId, image.imageUrl.get()) {
     data class UITabImageEvent(val image: ImageId) : ImageUIEvent
 
+    override val spanSize: Int = 1
+
     override fun bindItem(item: RxRecyclerViewBinder.CellItem, disposeBag: DisposeBag) {
         val binding = item.binding as ItemImageBinding
         binding.image = image
-
         RxView.clicks(binding.searchedImage)
                 .filter { binding.image?.imageUrl?.get()?.isNotEmpty() ?: false }
                 .subscribe { emitter?.takeIf { !it.hasComplete() }?.onNext(UITabImageEvent(image.imageUrl.get())) }

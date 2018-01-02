@@ -5,9 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Looper
 import io.reactivex.Observable
+import io.reactivex.ObservableSource
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import sdop.image.list.http.ImageJavaError
 import sdop.image.list.http.ImageThrowable
 import sdop.image.list.http.model.ImageRequest
@@ -53,6 +55,23 @@ fun <T> Observable<T>.debug(name: String = "", obj: Any? = null): Observable<T> 
         }
     }
 }
+object RxUtils {
+    fun <T1, T2, R> combineLatest(source1: ObservableSource<out T1>,
+                                  source2: ObservableSource<out T2>,
+                                  resultSelector: (T1, T2) -> R): Observable<R>
+            = Observable.combineLatest<T1, T2, R>(source1, source2, BiFunction { t1, t2 -> resultSelector(t1, t2) })
+}
+
+fun <T> Observable<Nullable<T>>.filterNotNull(): Observable<T> {
+    @Suppress("UNCHECKED_CAST")
+    return this.filter { it.value != null }.map { it.value!! }
+}
+
+/**
+ * An alias to [Observable.withLatestFrom], but allowing for cleaner lambda syntax.
+ */
+inline fun <T, U, R> Observable<T>.withLatestFrom(other: ObservableSource<U>, crossinline combiner: (T, U) -> R): Observable<R>
+        = withLatestFrom(other, BiFunction<T, U, R> { t, u -> combiner.invoke(t, u)  })
 
 class ImageResponseHandler<T : ImageResponse>(val doNotShowError: Boolean = false) : Observer<ImageRequest<T>> {
     var errorCodeMap = HashMap<ErrorCode, (T) -> Unit>()

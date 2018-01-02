@@ -13,6 +13,7 @@ import sdop.image.list.rx.debug
 import sdop.image.list.rx.recycler.RxRecyclerCell
 import sdop.image.list.rx.recycler.RxRecyclerCellStyle
 import sdop.image.list.rx.recycler.RxRecyclerViewBinder
+import sdop.image.list.util.KeyboardUtils
 import sdop.image.list.util.Notifier
 
 /**
@@ -38,6 +39,7 @@ data class FinderCell(private val emitter: UIEventPublisher? = null) : RxRecycle
                 .filter { it.isNotEmpty() }
                 .debug("jei emit search event")
                 .subscribe {
+                    KeyboardUtils.hideKeyboard(binder.imageFinder)
                     emitter?.takeIf { !it.hasComplete() }?.onNext(UISearchEvent(it))
                 }
                 .addTo(disposeBag)

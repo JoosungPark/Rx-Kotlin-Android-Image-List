@@ -1,6 +1,7 @@
 package sdop.image.list.rx.recycler
 
 import android.support.v7.widget.*
+import android.widget.AbsListView
 import com.minimize.android.rxrecycleradapter.OnGetItemViewType
 import com.minimize.android.rxrecycleradapter.RxDataSource
 import com.minimize.android.rxrecycleradapter.TypesViewHolder
@@ -27,8 +28,6 @@ class RxRecyclerViewBinder private constructor(private val recyclerView: Recycle
     private val disposeBagPerViewBinding = hashMapOf<Int, DisposeBag>()
 
     private val cellList = mutableListOf<RxRecyclerCellStyle>()
-    private var cache = mutableListOf<RecyclerView>()
-
     private val sourceList = mutableListOf<RxRecyclerCell>()
 
     private var latestListCell: RxRecyclerCellStyle? = null
@@ -43,8 +42,45 @@ class RxRecyclerViewBinder private constructor(private val recyclerView: Recycle
     }
 
     private fun clear() {
-        cache.map { it.clearOnScrollListeners() }
-        cache.clear()
+        disposeBagPerViewBinding.clear()
+        cellList.clear()
+        sourceList.clear()
+        if (layoutManager is StaggeredGridLayoutManager) {
+            recyclerView.removeOnScrollListener(staggeredGridScrollListener)
+        }
+    }
+
+    private fun setupRecycleViewDataSource() {
+        if (layoutManager is StaggeredGridLayoutManager) {
+            recyclerView.addOnScrollListener(staggeredGridScrollListener)
+        }
+    }
+
+    private val staggeredGridScrollListener = object : RecyclerView.OnScrollListener() {
+        private var latestScrolled = System.currentTimeMillis()
+
+        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            latestScrolled = System.currentTimeMillis()
+        }
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+//&& latestScrolled + 1000 > System.currentTimeMillis()
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE ) {
+                val adapter = dataSource.rxAdapterForTypes!!
+
+                if (layoutManager is StaggeredGridLayoutManager) {
+                    val range = mutableListOf(-1, -1)
+                    val v1 = layoutManager.findFirstVisibleItemPositions(null)
+                    val v2 = layoutManager.findLastVisibleItemPositions(null)
+                    range[0] = v1.filter { it >= 0 }.min() ?: 0
+                    range[1] = v2.max() ?: 0
+
+                    (range[0]..range[1]).forEach { adapter.notifyItemChanged(it) }
+                }
+            }
+        }
     }
 
     fun rx(alwaysReload: Boolean = false, alwaysScroll: Boolean = false): (List<RxRecyclerCell>) -> Unit {
@@ -74,6 +110,7 @@ class RxRecyclerViewBinder private constructor(private val recyclerView: Recycle
         val vi = mutableListOf<ViewHolderInfo>()
         cellList.map { vi.add(ViewHolderInfo(it.layoutResId, it.layoutResId)) }
 
+        setupRecycleViewDataSource()
         dataSource.bindRecyclerView(recyclerView, vi, getItemViewType)
                 .doOnUnsubscribe { clear() }
                 .subscribe {
@@ -106,7 +143,7 @@ class RxRecyclerViewBinder private constructor(private val recyclerView: Recycle
             } else {
                 val adapter = dataSource.rxAdapterForTypes!!
 
-                for (i in 0..(list.count()-1)) {
+                for (i in 0..(list.count() - 1)) {
                     val cell = list[i]
                     val indexOld = sourceList.indexOf(cell)
 
@@ -116,8 +153,8 @@ class RxRecyclerViewBinder private constructor(private val recyclerView: Recycle
                         if (alwaysScroll) {
                             recyclerView.scrollToPosition(list.count() - 1)
                         }
-                    } else if ( indexOld != i ) {
-                        if (i>=sourceList.size-1) {
+                    } else if (indexOld != i) {
+                        if (i >= sourceList.size - 1) {
                             sourceList.add(i, cell)
                             adapter.notifyItemInserted(i)
                         } else {
@@ -144,23 +181,32 @@ class RxRecyclerViewBinder private constructor(private val recyclerView: Recycle
         }
     }
 
-    companion object {
-        fun createLinearLayout(recyclerView: RecyclerView, disposeBag: DisposeBag): RxRecyclerViewBinder =
-                RxRecyclerViewBinder(recyclerView, disposeBag, LinearLayoutManager(App.app))
 
-        fun createHorizontalLinearLayout(recyclerView: RecyclerView, disposeBag: DisposeBag, reverse: Boolean = false): RxRecyclerViewBinder =
-                RxRecyclerViewBinder(recyclerView, disposeBag, LinearLayoutManager(App.app, LinearLayoutManager.HORIZONTAL, reverse))
+
+    companion object {
+        lateinit var latestLayoutManager: RecyclerView.LayoutManager
+
+        fun createLinearLayout(recyclerView: RecyclerView, disposeBag: DisposeBag): RxRecyclerViewBinder {
+            latestLayoutManager = LinearLayoutManager(App.app)
+            return RxRecyclerViewBinder(recyclerView, disposeBag, latestLayoutManager)
+        }
+
+        fun createHorizontalLinearLayout(recyclerView: RecyclerView, disposeBag: DisposeBag, reverse: Boolean = false): RxRecyclerViewBinder {
+            latestLayoutManager = LinearLayoutManager(App.app, LinearLayoutManager.HORIZONTAL, reverse)
+            return RxRecyclerViewBinder(recyclerView, disposeBag, latestLayoutManager)
+        }
 
         fun createGridLayout(recyclerView: RecyclerView, disposeBag: DisposeBag, column: Int): RxRecyclerViewBinder {
-            val b = RxRecyclerViewBinder(recyclerView, disposeBag, GridLayoutManager(App.app, column))
+            latestLayoutManager = GridLayoutManager(App.app, column)
+            val b = RxRecyclerViewBinder(recyclerView, disposeBag, latestLayoutManager)
             b.gridColumnSize = column
             return b
         }
 
         fun createStaggeredGridLayout(recyclerView: RecyclerView, disposeBag: DisposeBag, column: Int): RxRecyclerViewBinder {
-            val manager = StaggeredGridLayoutManager(column, StaggeredGridLayoutManager.VERTICAL)
-            manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-            val b = RxRecyclerViewBinder(recyclerView, disposeBag, manager)
+            latestLayoutManager = StaggeredGridLayoutManager(column, StaggeredGridLayoutManager.VERTICAL)
+            (latestLayoutManager as StaggeredGridLayoutManager).gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+            val b = RxRecyclerViewBinder(recyclerView, disposeBag, latestLayoutManager)
             b.gridColumnSize = column
             return b
         }
