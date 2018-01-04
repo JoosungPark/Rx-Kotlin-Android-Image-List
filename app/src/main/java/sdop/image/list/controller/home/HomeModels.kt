@@ -1,4 +1,4 @@
-package sdop.image.list.controller.model
+package sdop.image.list.controller.home
 
 import android.databinding.BaseObservable
 import android.databinding.ObservableField
@@ -37,11 +37,6 @@ class ImageModel : BaseObservable, ImageModelPresentable {
         this.height = height
 
         this.imageUrl.set(url)
-    }
-
-    val expectedGalleryRatio: Float
-    get() {
-        return maxOf(minOf((height.toFloat() / width.toFloat()), 2.0f), 0.5f)
     }
 }
 

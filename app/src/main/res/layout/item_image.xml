@@ -3,11 +3,11 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="sdop.image.list.controller.model.ImageModel" />
+        <import type="sdop.image.list.controller.home.ImageModel" />
 
         <variable
             name="image"
-            type="sdop.image.list.controller.model.ImageModel" />
+            type="sdop.image.list.controller.home.ImageModel" />
     </data>
 
     <android.support.v7.widget.AppCompatImageView

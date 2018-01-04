@@ -1,13 +1,11 @@
 package sdop.image.list.util
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.support.annotation.StringRes
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
-import sdop.image.list.App
+import sdop.image.list.common.App
 import sdop.image.list.R
 import sdop.image.list.rx.delay
 

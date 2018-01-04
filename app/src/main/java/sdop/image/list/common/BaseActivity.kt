@@ -1,7 +1,7 @@
-package sdop.image.list
+package sdop.image.list.common
 
 import android.support.v7.app.AppCompatActivity
-import sdop.image.list.common.FragmentFactory
+import sdop.image.list.R
 import sdop.image.list.rx.DisposeBag
 import java.util.ArrayList
 

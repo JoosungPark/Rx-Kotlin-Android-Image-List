@@ -1,7 +1,7 @@
 package sdop.image.list
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import sdop.image.list.common.BaseActivity
 import sdop.image.list.common.FragmentFactory
 
 class MainActivity : BaseActivity() {

@@ -6,7 +6,7 @@ import com.minimize.android.rxrecycleradapter.OnGetItemViewType
 import com.minimize.android.rxrecycleradapter.RxDataSource
 import com.minimize.android.rxrecycleradapter.TypesViewHolder
 import com.minimize.android.rxrecycleradapter.ViewHolderInfo
-import sdop.image.list.App
+import sdop.image.list.common.App
 import sdop.image.list.util.LogUtil
 import sdop.image.list.rx.DisposeBag
 import sdop.image.list.rx.addTo
@@ -172,8 +172,6 @@ class RxRecyclerViewBinder private constructor(private val recyclerView: Recycle
             }
         }
     }
-
-
 
     companion object {
         lateinit var latestLayoutManager: RecyclerView.LayoutManager

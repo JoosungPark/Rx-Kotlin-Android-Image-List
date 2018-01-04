@@ -1,7 +1,8 @@
-package sdop.image.list
+package sdop.image.list.common
 
 import android.content.Context
 import android.support.v4.app.Fragment
+import sdop.image.list.R
 import sdop.image.list.util.KeyboardUtils
 import sdop.image.list.rx.DisposeBag
 
@@ -21,6 +22,8 @@ open class BaseFragment : Fragment() {
         return (activity as? BaseActivity)?.let { it }
         ?: baseActivityContext ?: activity as BaseActivity
     }
+
+    val baseFragment: BaseFragment get() = this
 
     fun goToFragment(fragment: BaseFragment, containerId: Int = R.id.container) {
         goToFragment(fragment, null, containerId)

@@ -1,7 +1,6 @@
 package sdop.image.list.common
 
-import sdop.image.list.BaseFragment
-import sdop.image.list.controller.HomeFragment
+import sdop.image.list.controller.home.HomeFragment
 import sdop.image.list.controller.ImageFragment
 
 /**

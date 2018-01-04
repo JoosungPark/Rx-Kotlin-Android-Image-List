@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import sdop.image.list.BaseFragment
+import sdop.image.list.common.BaseFragment
 import sdop.image.list.rx.addTo
 
 /**
@@ -23,9 +23,7 @@ abstract class RxRecyclerFragment(open val alwaysScroll: Boolean = false, open v
 
     abstract fun adapter(): RxRecyclerViewBinder
 
-    protected open fun bindFragment() {
-
-    }
+    protected open fun bindFragment() { }
 
     private fun bindCell() {
         adapter = adapter()
