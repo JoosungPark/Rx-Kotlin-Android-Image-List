@@ -10,7 +10,7 @@ import sdop.image.list.common.App
  * Created by jei.park on 2018. 1. 2..
  */
 abstract class BasePreferences(private val name: String) {
-    lateinit protected var preferences: SharedPreferences
+    lateinit var preferences: SharedPreferences
     
     private fun initialize() {
         preferences = if (name.isEmpty()) PreferenceManager.getDefaultSharedPreferences(App.app)

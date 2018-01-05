@@ -4,6 +4,8 @@ import android.databinding.BindingAdapter
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import sdop.image.list.R
+import sdop.image.list.common.App
+import sdop.image.list.preference.SearchImagePreferences
 
 /**
  *
@@ -16,7 +18,8 @@ private val imagePlaceHolder = R.color.basic_divider
 @BindingAdapter("imageUrl", "imageWidth", "imageHeight")
 fun loadImage(view: ImageView, url: String?, width: String?, height: String?) {
     if (width == null || height == null) throw IllegalArgumentException("width or height contain null value. width : $width height : $height")
-    val scaledSize = recommendSize(width.toInt(), height.toInt(), 700, 100)
+    val threshold = App.app.persist.read<Int>(Persist.Key.ImageThreshold) ?: SearchImagePreferences.imageThresholdDefault
+    val scaledSize = recommendSize(width.toInt(), height.toInt(), threshold, SearchImagePreferences.imageMinimumHeight)
 
     view.layoutParams.height = scaledSize.second
 

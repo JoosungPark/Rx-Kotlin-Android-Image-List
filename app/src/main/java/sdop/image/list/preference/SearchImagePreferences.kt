@@ -7,5 +7,9 @@ package sdop.image.list.preference
 class SearchImagePreferences(val name: String) : BasePreferences(name) {
     companion object {
         val kImageThreshold = "kImageThreshold"
+        val imageThresholdDelta = 50
+        val imageThresholdMinimum = 200
+        val imageThresholdDefault = 750
+        val imageMinimumHeight = 200
     }
 }
