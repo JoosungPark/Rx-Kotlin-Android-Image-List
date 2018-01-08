@@ -7,6 +7,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import sdop.image.list.common.BaseFragment
 import sdop.image.list.rx.addTo
+import sdop.image.list.util.LogUtil
 
 /**
  *
@@ -23,6 +24,8 @@ abstract class RxRecyclerFragment(open val alwaysScroll: Boolean = false, open v
 
     abstract fun adapter(): RxRecyclerViewBinder
 
+    protected open fun scrollToIfNeed() { }
+
     protected open fun bindFragment() { }
 
     private fun bindCell() {
@@ -33,6 +36,10 @@ abstract class RxRecyclerFragment(open val alwaysScroll: Boolean = false, open v
         sourceObservable()
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
+                .doAfterNext {
+                    LogUtil.d("jei doAfterNext")
+                    scrollToIfNeed()
+                }
                 .subscribe(adapter!!.rx(alwaysReload, alwaysScroll))
                 .addTo(disposeBag)
     }

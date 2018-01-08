@@ -1,5 +1,7 @@
 package sdop.image.list.controller.home
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,19 +15,20 @@ import sdop.image.list.common.EndlessRecyclerViewScrollListener
 import sdop.image.list.common.StaggeredGridGalleryItemDecoration
 import sdop.image.list.controller.home.cell.FinderCell
 import sdop.image.list.controller.home.cell.ImageCell
+import sdop.image.list.controller.image.ImagePagerViewModel
 import sdop.image.list.data.SearchImageServer
 import sdop.image.list.databinding.FragmentHomeBinding
 import sdop.image.list.rx.*
 import sdop.image.list.rx.recycler.*
+import sdop.image.list.util.Notifier
+import java.util.concurrent.TimeUnit
 
 /**
  *
  * Created by jei.park on 2017. 12. 26..
  */
 class HomeFragment : RxRecyclerFragment(), HomeContract.View {
-
-    private val viewModel = HomeViewModel(this, SearchImageServer(server))
-
+    private lateinit var viewModel: HomeViewModel
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun sourceObservable(): Observable<List<RxRecyclerCell>> = viewModel.dataSource
@@ -40,8 +43,25 @@ class HomeFragment : RxRecyclerFragment(), HomeContract.View {
         return binding?.root
     }
 
+    override fun scrollToIfNeed() {
+        super.scrollToIfNeed()
+
+        (binding as? FragmentHomeBinding)?.apply {
+            viewModel.scrollToIndex?.let {
+                Observable.just(it)
+                        .delay(100, TimeUnit.MILLISECONDS)
+                        .take(1)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { recyclerView.layoutManager.scrollToPosition(it) }
+                        .addTo(disposeBag)
+
+            }
+        }
+    }
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (binding as? FragmentHomeBinding)?.apply {
             recyclerView.addItemDecoration(StaggeredGridGalleryItemDecoration(context))
 
@@ -65,12 +85,28 @@ class HomeFragment : RxRecyclerFragment(), HomeContract.View {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ImagePagerViewModel.codeLatestIndex && resultCode == Activity.RESULT_OK) {
+            val latestIndex = data?.getIntExtra(ImagePagerViewModel.kLatestIndex, 0) ?: return
+            (binding as? FragmentHomeBinding)?.apply { viewModel.scrollTo(latestIndex) }
+        }
+    }
+
     override fun reload() {
         scrollListener.resetState()
     }
 
+    override fun onError(error: Throwable) {
+        Notifier.toast(error.localizedMessage)
+    }
+
     companion object {
-        fun newInstance() = HomeFragment()
+        fun newInstance(): HomeFragment {
+            val fragment = HomeFragment()
+            fragment.viewModel = HomeViewModel(fragment, SearchImageServer(fragment.server))
+            return fragment
+        }
     }
 }
 

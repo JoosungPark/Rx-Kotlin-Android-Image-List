@@ -2,6 +2,7 @@ package sdop.image.list
 
 import android.os.Bundle
 import sdop.image.list.common.BaseActivity
+import sdop.image.list.common.FragmentBundle
 import sdop.image.list.common.FragmentFactory
 
 class MainActivity : BaseActivity() {
@@ -10,6 +11,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loadFragment(FragmentFactory.FragmentType.Home, R.id.container)
+        loadFragment(FragmentBundle.Home, containerId = R.id.container)
     }
 }

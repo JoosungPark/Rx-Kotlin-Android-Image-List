@@ -3,7 +3,7 @@ package sdop.image.list.controller.home.cell
 import com.jakewharton.rxbinding2.view.RxView
 import sdop.image.list.R
 import sdop.image.list.controller.home.HomeViewModel
-import sdop.image.list.controller.home.ImageModel
+import sdop.image.list.model.ImageModel
 import sdop.image.list.databinding.ItemImageBinding
 import sdop.image.list.rx.DisposeBag
 import sdop.image.list.rx.addTo
@@ -23,7 +23,7 @@ data class ImageCell(private val image: ImageModel, private val viewModel: HomeV
         binding.image = image
         RxView.clicks(binding.searchedImage)
                 .filter { binding.image?.imageUrl?.get()?.isNotEmpty() ?: false }
-                .subscribe { viewModel.tapImage(image.url) }
+                .subscribe { viewModel.tapImage(image) }
                 .addTo(disposeBag)
     }
 

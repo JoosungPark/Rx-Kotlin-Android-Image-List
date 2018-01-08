@@ -13,7 +13,7 @@ open class BaseActivity : AppCompatActivity() {
     protected val DEBUG_TAG = this.javaClass.simpleName
     protected var disposeBag = DisposeBag()
 
-    protected fun loadFragment(fragment: BaseFragment, animations: ArrayList<Int>? = null, replace: Boolean = false, containerId: Int = R.id.container, allowStateLoss: Boolean = false) {
+    fun loadFragment(fragment: BaseFragment, animations: ArrayList<Int>? = null, replace: Boolean = false, containerId: Int = R.id.container, allowStateLoss: Boolean = false) {
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
         if (animations != null) {
@@ -34,14 +34,14 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    protected fun replaceFragment(fragment: BaseFragment, containerId: Int = R.id.container) {
+    fun replaceFragment(fragment: BaseFragment, containerId: Int = R.id.container) {
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
         ft.replace(containerId, fragment)
         ft.commit()
     }
 
-    protected fun loadFragment(fragment: BaseFragment, replace: Boolean = false, containerId: Int = R.id.container) {
+    fun loadFragment(fragment: BaseFragment, replace: Boolean = false, containerId: Int = R.id.container) {
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
         if (replace) {
@@ -53,8 +53,8 @@ open class BaseActivity : AppCompatActivity() {
         ft.commit()
     }
 
-    protected fun loadFragment(type: FragmentFactory.FragmentType, containerId: Int, arg: String? = null) {
-        loadFragment(FragmentFactory.createFragment(type, arg), false, containerId)
+    fun loadFragment(type: FragmentBundle, replace: Boolean = false, containerId: Int = R.id.container) {
+        loadFragment(FragmentFactory.createFragment(type), replace, containerId)
     }
 
     override fun onDestroy() {

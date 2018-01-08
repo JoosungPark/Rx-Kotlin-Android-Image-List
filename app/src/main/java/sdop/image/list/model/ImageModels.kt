@@ -1,4 +1,4 @@
-package sdop.image.list.controller.home
+package sdop.image.list.model
 
 import android.databinding.BaseObservable
 import android.databinding.ObservableField
@@ -40,9 +40,9 @@ class ImageModel : BaseObservable, ImageModelPresentable {
     }
 }
 
-interface HomeImageModelPresentable {
+interface SearchImageModelPresentable {
     var hasMore: Boolean
     var images: List<ImageModel>
 }
 
-data class HomeImageModel(override var hasMore: Boolean, override var images: List<ImageModel>) : HomeImageModelPresentable
+data class SearchImageModel(override var hasMore: Boolean, override var images: List<ImageModel>) : SearchImageModelPresentable

@@ -14,6 +14,7 @@ import sdop.image.list.preference.SearchImagePreferences
 typealias ImageId = String
 
 private val imagePlaceHolder = R.color.basic_divider
+private val imageBaseColor = android.R.color.black
 
 @BindingAdapter("imageUrl", "imageWidth", "imageHeight")
 fun loadImage(view: ImageView, url: String?, width: String?, height: String?) {
@@ -37,6 +38,15 @@ fun loadImage(view: ImageView, url: String?, width: String?, height: String?) {
                 .error(imagePlaceHolder)
                 .into(view)
     }
+}
+
+@BindingAdapter("fullImageUrl")
+fun loadFullPhotoImage(view: ImageView, url: String?) {
+    Picasso.with(view.context)
+            .load(url)
+            .error(imageBaseColor)
+            .placeholder(imageBaseColor)
+            .into(view)
 }
 
 private fun recommendSize(originWidth: Int, originHeight: Int, threshold: Int, minHeight: Int): Pair<Int, Int> {
