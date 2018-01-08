@@ -36,10 +36,7 @@ abstract class RxRecyclerFragment(open val alwaysScroll: Boolean = false, open v
         sourceObservable()
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doAfterNext {
-                    LogUtil.d("jei doAfterNext")
-                    scrollToIfNeed()
-                }
+                .doAfterNext { scrollToIfNeed() }
                 .subscribe(adapter!!.rx(alwaysReload, alwaysScroll))
                 .addTo(disposeBag)
     }
