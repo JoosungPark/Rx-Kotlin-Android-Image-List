@@ -10,5 +10,4 @@ open class ImageThrowable(override val message: String? = "", override val cause
 
 class ImageJavaError(private val error: Throwable) : ImageThrowable(error.localizedMessage, error)
 
-class ImageServerError(val errorCode: ErrorCode = ErrorCode.INVALID, val errorMessage: String) : ImageThrowable(errorMessage, Throwable(errorMessage)) {
-}
+class ImageServerError(val errorCode: ErrorCode = ErrorCode.INVALID, val errorMessage: String) : ImageThrowable(errorMessage, Throwable(errorMessage))

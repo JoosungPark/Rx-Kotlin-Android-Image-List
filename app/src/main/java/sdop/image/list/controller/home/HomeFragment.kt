@@ -18,6 +18,7 @@ import sdop.image.list.controller.home.cell.ImageCell
 import sdop.image.list.controller.image.ImagePagerViewModel
 import sdop.image.list.data.SearchImageServer
 import sdop.image.list.databinding.FragmentHomeBinding
+import sdop.image.list.handleError
 import sdop.image.list.rx.*
 import sdop.image.list.rx.recycler.*
 import sdop.image.list.util.Notifier
@@ -98,7 +99,7 @@ class HomeFragment : RxRecyclerFragment(), HomeContract.View {
     }
 
     override fun onError(error: Throwable) {
-        Notifier.toast(error.localizedMessage)
+        handleError(error)
     }
 
     companion object {
@@ -109,4 +110,3 @@ class HomeFragment : RxRecyclerFragment(), HomeContract.View {
         }
     }
 }
-

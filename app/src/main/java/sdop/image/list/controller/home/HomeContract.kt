@@ -3,6 +3,7 @@ package sdop.image.list.controller.home
 import io.reactivex.Observable
 import sdop.image.list.BaseView
 import sdop.image.list.BaseViewModel
+import sdop.image.list.ErrorHandlerPresentable
 import sdop.image.list.model.ImageModel
 import sdop.image.list.rx.Variable
 import sdop.image.list.rx.recycler.RxRecyclerCell
@@ -12,9 +13,8 @@ import sdop.image.list.rx.recycler.RxRecyclerCell
  * Created by jei.park on 2018. 1. 4..
  */
 interface HomeContract {
-    interface View : BaseView<ViewModel> {
+    interface View : BaseView<ViewModel>, ErrorHandlerPresentable {
         fun reload()
-        fun onError(error: Throwable)
     }
 
     interface ViewModel : BaseViewModel {

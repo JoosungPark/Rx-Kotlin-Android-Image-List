@@ -11,11 +11,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import sdop.image.list.common.BaseFragment
 import sdop.image.list.data.SearchImageRepo
 import sdop.image.list.databinding.FragmentImagePagerBinding
+import sdop.image.list.handleError
 import sdop.image.list.model.ImageModel
 import sdop.image.list.rx.RxUtils
 import sdop.image.list.rx.Variable
 import sdop.image.list.rx.addTo
-import sdop.image.list.util.Notifier
 
 /**
  *
@@ -26,7 +26,7 @@ class ImagePagerFragment : BaseFragment(), ImagePagerContract.View {
     private lateinit var viewModel: ImagePagerViewModel
 
     override fun onError(error: Throwable) {
-        Notifier.toast(error.localizedMessage)
+        handleError(error)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
