@@ -36,7 +36,6 @@ data class FinderCell(private val viewModel: HomeViewModel) : RxRecyclerCell(lay
 
         searchStream
                 .filter { it.isNotEmpty() }
-                .debug("jei emit search event")
                 .subscribe {
                     KeyboardUtils.hideKeyboard(binder.imageFinder)
                     viewModel.getImages(it)
