@@ -12,9 +12,11 @@ import sdop.image.list.model.ImageId
 import sdop.image.list.model.ImageModel
 import sdop.image.list.rx.MaybeVariable
 import sdop.image.list.rx.Variable
+import sdop.image.list.rx.debug
 import sdop.image.list.rx.recycler.RxRecyclerCell
 import sdop.image.list.util.LogUtil
 import sdop.image.list.util.Notifier
+import java.util.function.Consumer
 
 /**
  *
@@ -48,7 +50,7 @@ data class HomeViewModel(private val view: HomeContract.View, private val repo: 
             repo.getMoreImages(searchImageModel.value.size).subscribe({
                 hasMoreModel.value = it.hasMore
                 searchImageModel.value = searchImageModel.value + it.images
-            }, { view.onError(it) }, { isLoading.value = false })
+            }, { view.onError(it) }, { }, { isLoading.value = false })
         }
     }
 
@@ -58,11 +60,14 @@ data class HomeViewModel(private val view: HomeContract.View, private val repo: 
         view.reload()
         searchImageModel.value = mutableListOf()
 
-        repo.getImages(keyword).subscribe({
-            searchImageModel.value = it.images
-            hasMoreModel.value = it.hasMore
-            isLoaded = true
-        }, { view.onError(it) }, { isLoading.value = false })
+        //Consumer<? super Throwable> onError
+
+        repo.getImages(keyword)
+                .subscribe({
+                    searchImageModel.value = it.images
+                    hasMoreModel.value = it.hasMore
+                    isLoaded = true
+                }, { view.onError(it) }, { }, { isLoading.value = false })
     }
 
     override fun tapImage(image: ImageModel) {
@@ -72,6 +77,7 @@ data class HomeViewModel(private val view: HomeContract.View, private val repo: 
     }
 
     override fun scrollTo(position: Int) {
+
         scrollToIndex = position
     }
 }

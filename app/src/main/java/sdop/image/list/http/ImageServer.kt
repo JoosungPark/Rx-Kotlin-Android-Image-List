@@ -2,6 +2,8 @@ package sdop.image.list.http
 
 import android.content.Context
 import com.google.gson.GsonBuilder
+import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.observables.ConnectableObservable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.ReplaySubject
@@ -45,8 +47,6 @@ class ImageServer() {
 
     fun <T : ImageResponse> request(request: ImageRequest<T>): ConnectableObservable<ImageRequest<T>> {
         val subject = ReplaySubject.create<ImageRequest<T>>()
-        val broadcast = subject.publish()
-        broadcast.connect()
 
         request.isNetworking.set(true)
         val token = request.uniqueToken
@@ -54,7 +54,8 @@ class ImageServer() {
             if (token.isNotEmpty()) {
                 networkInProgress.get()[token]?.let { stream ->
                     @Suppress("UNCHECKED_CAST")
-                    return stream as ConnectableObservable<ImageRequest<T>>
+                    subject.onNext(stream as ImageRequest<T>)
+                    subject.onComplete()
                 }
             }
         }
@@ -62,21 +63,12 @@ class ImageServer() {
         request.requestState.asObservable()
                 .filter { it !is RequestInitializing }
                 .take(1)
-                .observeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.computation())
                 .subscribe {
-                    val publishAndComplete = {
-                        request.isNetworking.set(false)
-                        subject.onNext(request)
-                        subject.onComplete()
-                    }
-
                     when (it) {
                         is RequestError -> {
-                            delay {
-                                request.error.set(ImageJavaError(it.error))
-                                request.response.set(null)
-                                publishAndComplete()
-                            }
+                            request.isNetworking.set(false)
+                            subject.onError(ImageJavaError(it.error))
                         }
                         is RequestReady -> {
                             val url = request.url
@@ -103,9 +95,7 @@ class ImageServer() {
                                     e?.let {
                                         try {
                                             it.printStackTrace()
-                                            request.error.set(ImageJavaError(it))
-                                            request.response.set(null)
-                                            publishAndComplete()
+                                            subject.onError(ImageJavaError(it))
                                         } finally {
                                             token?.let { networkInProgress.value.remove(it) }
                                         }
@@ -118,36 +108,37 @@ class ImageServer() {
                                         try {
                                             val res: T = gson.fromJson(this, request.responseType)
 
-
                                             if (res.errorCode != null && res.errorMessage != null) {
-                                                request.error.set(ImageServerError(ErrorCode.from(res.errorCode), res.errorMessage!!))
-                                                request.response.set(null)
+                                                subject.onError(ImageServerError(ErrorCode.from(res.errorCode), res.errorMessage!!))
                                             } else {
                                                 request.processResult(res)
                                                 request.response.set(res)
+                                                subject.onNext(request)
+                                                request.isNetworking.set(false)
+                                                subject.onComplete()
                                             }
-
-                                            publishAndComplete()
                                         } catch (ex: Exception) {
                                             if (BuildConfig.DEBUG) {
                                                 throw ex
                                             }
                                             ex.printStackTrace()
-                                            request.error.set(ImageJavaError(ex))
-                                            request.response.set(null)
-                                            publishAndComplete()
+                                            subject.onError(ImageJavaError(ex))
+                                            request.isNetworking.set(false)
                                         } finally {
-                                            token?.let { networkInProgress.value.remove(it) }
                                             close()
                                         }
                                     }
+
                                 }
                             })
                         }
                     }
                 }
 
-        token?.let { networkInProgress.value.remove(it) }
+        token?.let { networkInProgress.get()[token] = request }
+
+        val broadcast = subject.publish()
+        broadcast.connect()
         return broadcast
     }
 }
