@@ -8,14 +8,12 @@ import sdop.image.list.util.Notifier
  *
  * Created by jei.park on 2018. 1. 11..
  */
-interface ErrorHandlerPresentable {
-    fun onError(error: Throwable)
-}
-
-fun handleError(error: Throwable) {
-    when (error) {
-        is ImageServerError -> Notifier.toast("server error occurred.\n error code : ${error.errorCode} \n${error.errorMessage}")
-        is ImageJavaError -> Notifier.toast(error.localizedMessage)
-        else -> Notifier.toast(error.localizedMessage)
+interface ErrorHandler {
+    fun handleError(error: Throwable?) = error?.let {
+        when (error) {
+            is ImageServerError -> Notifier.toast("server error occurred.\n error code : ${error.errorCode} \n${error.errorMessage}")
+            is ImageJavaError -> Notifier.toast(error.localizedMessage)
+            else -> Notifier.toast(error.localizedMessage)
+        }
     }
 }

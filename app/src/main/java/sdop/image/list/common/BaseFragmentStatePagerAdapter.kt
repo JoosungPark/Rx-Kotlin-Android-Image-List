@@ -23,7 +23,7 @@ open class BaseFragmentStatePagerAdapter(fm: FragmentManager) : FragmentStatePag
         return fragment
     }
 
-    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         super.destroyItem(container, position, `object`)
         fragmentPosition.remove(`object`)
     }

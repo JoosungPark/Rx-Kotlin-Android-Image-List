@@ -14,7 +14,7 @@ class SearchImageRequest(private val query: String, private val start: String) :
     override val responseType: Type get() = object : TypeToken<SearchImageResponse>() {}.type
     override val method: HTTPMethod get() = HTTPMethod.get
     override var url: String = "https://openapi.naver.com/v1/search/image?query=$query"
-    override val uniqueToken: String? get() = "${this.javaClass.simpleName}_${query}_${start ?: ""}"
+    override val uniqueToken: String? get() = "${this.javaClass.simpleName}_${query}_$start"
 
     init {
         header[ImageConfig.kClientId] = ImageConfig.clientID

@@ -3,6 +3,7 @@ package sdop.image.list.common
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import sdop.image.list.R
 import sdop.image.list.util.KeyboardUtils
@@ -77,7 +78,7 @@ open class BaseFragment : Fragment() {
     }
 
     fun setFragmentResult(data: Intent) {
-        if (targetFragment != null) targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_OK, data)
+        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, data)
     }
 
     override fun onAttach(context: Context?) {
@@ -85,8 +86,10 @@ open class BaseFragment : Fragment() {
 
         (context as? BaseActivity)?.let { baseActivityContext = it }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         disposeBag.dispose()
     }
+
 }

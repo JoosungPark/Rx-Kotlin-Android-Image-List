@@ -33,7 +33,7 @@ class SearchImageServer(private val server: ImageServer) : SearchImageRepo {
     }
 
     private fun internalGetImages(request: SearchImageRequest): Observable<SearchImageModelPresentable> {
-        return server.request(request).map {
+        return server.request(request, false).map {
             it.response.value?.let {
                 val hasMore = if (it.total != null && it.start != null && it.display != null) it.total < it.start + it.display else false
                 val items: List<ImageModel> = it.items?.map { ImageModel(it.link, it.thumbnail, it.sizewidth, it.sizeheight) } ?: listOf()

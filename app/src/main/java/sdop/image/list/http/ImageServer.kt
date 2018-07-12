@@ -45,13 +45,13 @@ class ImageServer() {
         client.dispatcher().maxRequestsPerHost = 5
     }
 
-    fun <T : ImageResponse> request(request: ImageRequest<T>): ConnectableObservable<ImageRequest<T>> {
+    fun <T : ImageResponse> request(request: ImageRequest<T>, isCache: Boolean = true): ConnectableObservable<ImageRequest<T>> {
         val subject = ReplaySubject.create<ImageRequest<T>>()
 
         request.isNetworking.set(true)
         val token = request.uniqueToken
         token?.let {
-            if (token.isNotEmpty()) {
+            if (token.isNotEmpty() && isCache) {
                 networkInProgress.get()[token]?.let { stream ->
                     @Suppress("UNCHECKED_CAST")
                     subject.onNext(stream as ImageRequest<T>)

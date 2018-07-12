@@ -3,17 +3,16 @@ package sdop.image.list.controller.home.cell
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.addTo
 import sdop.image.list.R
-import sdop.image.list.controller.home.HomeViewModel
 import sdop.image.list.databinding.ItemFinderBinding
 import sdop.image.list.rx.DisposeBag
-import sdop.image.list.rx.addTo
-import sdop.image.list.rx.debug
 import sdop.image.list.rx.recycler.RxRecyclerCell
 import sdop.image.list.rx.recycler.RxRecyclerCellStyle
 import sdop.image.list.rx.recycler.RxRecyclerViewBinder
 import sdop.image.list.util.KeyboardUtils
 import sdop.image.list.util.Notifier
+import sdop.image.list.viewmodel.HomeViewModel
 
 /**
  *
@@ -32,7 +31,7 @@ data class FinderCell(private val viewModel: HomeViewModel) : RxRecyclerCell(lay
         searchStream
                 .filter { it.isEmpty() }
                 .subscribe { Notifier.toast(R.string.No_Keyword) }
-                .addTo(disposeBag)
+                .addTo(viewModel.disposeBag)
 
         searchStream
                 .filter { it.isNotEmpty() }
@@ -40,11 +39,11 @@ data class FinderCell(private val viewModel: HomeViewModel) : RxRecyclerCell(lay
                     KeyboardUtils.hideKeyboard(binder.imageFinder)
                     viewModel.getImages(it)
                 }
-                .addTo(disposeBag)
+                .addTo(viewModel.disposeBag)
     }
 
     companion object {
-        val layoutResId = R.layout.item_finder
+        const val layoutResId = R.layout.item_finder
 
         fun style() = RxRecyclerCellStyle(layoutResId)
     }

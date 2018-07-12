@@ -2,6 +2,7 @@ package sdop.image.list.model
 
 import android.databinding.BaseObservable
 import android.databinding.ObservableField
+import java.io.Serializable
 import java.security.InvalidParameterException
 
 /**
@@ -16,7 +17,7 @@ interface ImageModelPresentable {
 }
 
 @Suppress("ConvertSecondaryConstructorToPrimary")
-class ImageModel : BaseObservable, ImageModelPresentable {
+class ImageModel : BaseObservable, ImageModelPresentable, Serializable {
     val imageUrl = ObservableField<String>()
 
     override val url: String
