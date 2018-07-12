@@ -15,7 +15,7 @@ import sdop.image.list.rx.Variable
 
 sealed class FragmentBundle {
     object Home : FragmentBundle()
-    data class ImagePager(val currentImage: ImageModel, val images: Variable<List<ImageModel>>, val repo: SearchImageRepo) : FragmentBundle()
+    data class ImagePager(val index: Int) : FragmentBundle()
     data class Image(val image: ImageModel) : FragmentBundle()
 }
 
@@ -24,7 +24,7 @@ class FragmentFactory {
     companion object {
         fun createFragment(bundle: FragmentBundle): BaseFragment = when (bundle) {
                 is FragmentBundle.Home -> HomeFragment.newInstance()
-                is ImagePager -> ImagePagerFragment.newInstance(bundle.currentImage, bundle.images, bundle.repo)
+                is ImagePager -> ImagePagerFragment.newInstance(bundle.index)
                 is FragmentBundle.Image -> ImageFragment.newInstance(bundle.image)
         }
     }

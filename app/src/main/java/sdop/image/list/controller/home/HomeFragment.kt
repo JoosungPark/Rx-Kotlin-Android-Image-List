@@ -28,9 +28,7 @@ import java.util.concurrent.TimeUnit
  */
 class HomeFragment : RxRecyclerFragment(), ErrorHandler {
 
-    private val viewModel: HomeViewModel by lazy {
-        HomeViewModel(App.app, SearchImageServer(server))
-    }
+    private val viewModel: HomeViewModel by lazy { homeViewModelFactory }
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private var dataBinding: FragmentHomeBinding? = null
@@ -109,11 +107,13 @@ class HomeFragment : RxRecyclerFragment(), ErrorHandler {
     }
 
     private fun openImage(image: ImageModel) {
-        val fragment = FragmentFactory.createFragment(FragmentBundle.ImagePager(image, viewModel.images, viewModel.repo))
+        val fragment = FragmentFactory.createFragment(FragmentBundle.ImagePager(viewModel.images.value.indexOf(image)))
+        fragment.setTargetFragment(this, ImagePagerViewModel.codeLatestIndex)
         pushFragment(fragment)
     }
 
     companion object {
         fun newInstance() = HomeFragment()
+        val homeViewModelFactory = HomeViewModel(App.app, SearchImageServer(App.app.server))
     }
 }

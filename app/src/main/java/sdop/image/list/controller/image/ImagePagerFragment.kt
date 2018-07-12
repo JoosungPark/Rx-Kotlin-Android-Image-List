@@ -1,5 +1,6 @@
 package sdop.image.list.controller.image
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.ViewPager
@@ -10,16 +11,16 @@ import com.jakewharton.rxbinding2.support.v4.view.RxViewPager
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import sdop.image.list.ErrorHandler
-import sdop.image.list.common.App
-import sdop.image.list.common.BaseFragment
-import sdop.image.list.common.observe
-import sdop.image.list.common.withViewModel
+import sdop.image.list.common.*
+import sdop.image.list.controller.home.HomeFragment
 import sdop.image.list.data.SearchImageRepo
+import sdop.image.list.data.SearchImageServer
 import sdop.image.list.databinding.FragmentImagePagerBinding
 import sdop.image.list.model.ImageModel
 import sdop.image.list.rx.RxUtils
 import sdop.image.list.rx.Variable
 import sdop.image.list.rx.addTo
+import sdop.image.list.viewmodel.HomeViewModel
 import sdop.image.list.viewmodel.ImagePagerViewModel
 
 /**
@@ -29,11 +30,12 @@ import sdop.image.list.viewmodel.ImagePagerViewModel
 class ImagePagerFragment : BaseFragment(), ErrorHandler {
     private var binding: FragmentImagePagerBinding? = null
 
-    private lateinit var current: ImageModel
-    private lateinit var searchImageModel: Variable<List<ImageModel>>
-    private lateinit var repo: SearchImageRepo
+    private val index: Int by lazy { arguments?.getInt(kIndex) ?: 0 }
 
-    private val viewModel: ImagePagerViewModel by lazy { ImagePagerViewModel(App.app, current, searchImageModel, repo) }
+    private val viewModel: ImagePagerViewModel by lazy {
+        val homeViewModel = baseActivity.getViewModel { HomeFragment.homeViewModelFactory }
+        ImagePagerViewModel(App.app, index, homeViewModel.images, homeViewModel.repo)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -121,12 +123,12 @@ class ImagePagerFragment : BaseFragment(), ErrorHandler {
     }
 
     companion object {
-        fun newInstance(current: ImageModel, searchImageModel: Variable<List<ImageModel>>, repo: SearchImageRepo): ImagePagerFragment {
-            val fragment = ImagePagerFragment()
-            fragment.current = current
-            fragment.searchImageModel = searchImageModel
-            fragment.repo = repo
-            return fragment
+        private const val kIndex = "index"
+
+        fun newInstance(index: Int) = ImagePagerFragment().apply {
+            arguments = Bundle().apply {
+                putInt(kIndex, index)
+            }
         }
     }
 }

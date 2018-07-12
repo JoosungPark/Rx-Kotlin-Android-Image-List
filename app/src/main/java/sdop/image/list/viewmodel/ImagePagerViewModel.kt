@@ -10,13 +10,13 @@ import sdop.image.list.rx.Variable
 
 class ImagePagerViewModel(
         context: Application,
-        current: ImageModel,
+        index: Int,
         private var searchImageModel: Variable<List<ImageModel>>,
         private val repo: SearchImageRepo
 ) : AppViewModel(context) {
     val dataSource: Observable<List<FragmentBundle>>
     val viewCreated = Variable(false)
-    val expectedPosition = Variable(searchImageModel.value.indexOf(current))
+    val expectedPosition = Variable(index)
     val isLoading = Variable(false)
     val isDragging = Variable(false)
     private val hasMoreModel = Variable(false)
