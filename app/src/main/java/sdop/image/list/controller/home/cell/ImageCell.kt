@@ -2,7 +2,6 @@ package sdop.image.list.controller.home.cell
 
 import com.jakewharton.rxbinding2.view.RxView
 import sdop.image.list.R
-import sdop.image.list.controller.home.HomeViewModel
 import sdop.image.list.model.ImageModel
 import sdop.image.list.databinding.ItemImageBinding
 import sdop.image.list.rx.DisposeBag
@@ -10,6 +9,7 @@ import sdop.image.list.rx.addTo
 import sdop.image.list.rx.recycler.RxRecyclerCell
 import sdop.image.list.rx.recycler.RxRecyclerCellStyle
 import sdop.image.list.rx.recycler.RxRecyclerViewBinder
+import sdop.image.list.viewmodel.HomeViewModel
 
 /**
  *

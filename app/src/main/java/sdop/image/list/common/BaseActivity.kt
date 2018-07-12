@@ -13,6 +13,10 @@ open class BaseActivity : AppCompatActivity() {
     protected val DEBUG_TAG = this.javaClass.simpleName
     protected var disposeBag = DisposeBag()
 
+    enum class ActivityType {
+        ImagePager
+    }
+
     fun loadFragment(fragment: BaseFragment, animations: ArrayList<Int>? = null, replace: Boolean = false, containerId: Int = R.id.container, allowStateLoss: Boolean = false) {
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()

@@ -12,14 +12,12 @@ import sdop.image.list.preference.SearchImagePreferences
  */
 class App : Application() {
     val server = ImageServer()
-    lateinit var preferences: SearchImagePreferences
     lateinit var persist: Persist
 
     override fun onCreate() {
         super.onCreate()
         app = this
-        preferences = SearchImagePreferences(BuildConfig.APPLICATION_ID)
-        persist = Persist(preferences)
+        persist = Persist(SearchImagePreferences(BuildConfig.APPLICATION_ID))
 
         Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler)
     }
