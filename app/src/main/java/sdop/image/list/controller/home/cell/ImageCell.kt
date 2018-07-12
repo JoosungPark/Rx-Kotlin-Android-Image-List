@@ -15,7 +15,7 @@ import sdop.image.list.rx.recycler.RxRecyclerViewBinder
  *
  * Created by jei.park on 2017. 12. 26..
  */
-data class ImageCell(private val image: ImageModel, private val viewModel: HomeViewModel) : RxRecyclerCell(layoutResId, image.imageUrl.get()) {
+data class ImageCell(private val image: ImageModel, private val viewModel: HomeViewModel) : RxRecyclerCell(layoutResId, image.imageUrl.get() ?: ImageCell.hashCode().toString()) {
     override val spanSize: Int = 1
 
     override fun bindItem(item: RxRecyclerViewBinder.CellItem, disposeBag: DisposeBag) {

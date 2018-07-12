@@ -45,7 +45,7 @@ abstract class RxRecyclerFragment(open val alwaysScroll: Boolean = false, open v
 
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bindFragment()

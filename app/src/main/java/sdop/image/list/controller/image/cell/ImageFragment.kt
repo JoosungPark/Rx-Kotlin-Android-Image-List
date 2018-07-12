@@ -16,13 +16,13 @@ class ImageFragment : BaseFragment(), ImageContract.View {
     private lateinit var binding: FragmentImageBinding
     private lateinit var viewModel: ImageContract.ViewModel
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        inflater?.let { binding = FragmentImageBinding.inflate(it, container, false) }
+        inflater.let { binding = FragmentImageBinding.inflate(it, container, false) }
         return binding.root
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.image = viewModel.model
     }

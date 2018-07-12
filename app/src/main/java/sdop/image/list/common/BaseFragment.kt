@@ -77,7 +77,7 @@ open class BaseFragment : Fragment() {
     }
 
     fun setFragmentResult(data: Intent) {
-        if (targetFragment != null) targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_OK, data)
+        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, data)
     }
 
     override fun onAttach(context: Context?) {

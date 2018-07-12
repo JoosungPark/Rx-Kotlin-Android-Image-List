@@ -38,9 +38,9 @@ class HomeFragment : RxRecyclerFragment(), HomeContract.View {
 
     override fun adapter(): RxRecyclerViewBinder = RxRecyclerViewBinder.createStaggeredGridLayout(recycler_view, disposeBag, 2)
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = inflater?.let { FragmentHomeBinding.inflate(it, container, false) }
+        binding = inflater.let { FragmentHomeBinding.inflate(it, container, false) }
         return binding?.root
     }
 
@@ -60,11 +60,11 @@ class HomeFragment : RxRecyclerFragment(), HomeContract.View {
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         (binding as? FragmentHomeBinding)?.apply {
-            recyclerView.addItemDecoration(StaggeredGridGalleryItemDecoration(context))
+            recyclerView.addItemDecoration(StaggeredGridGalleryItemDecoration(view.context))
 
             // 스크롤 리스너에서 사용하는 layoutmanager는 rxrecyclerview가 생성된 후 사용 가능하므로
             // scrollListener의 초기화는 여기에서 한다

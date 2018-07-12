@@ -28,7 +28,7 @@ class Persist(val preferences: BasePreferences? = null) {
         preferences?.let {
             when (key) {
                 Persist.Key.ImageThreshold -> it.updateValue(key.key, value as Int?)
-                else -> throw IllegalArgumentException("preference key and value type does not match.")
+//                else -> throw IllegalArgumentException("preference key and value type does not match.")
             }
         }
 

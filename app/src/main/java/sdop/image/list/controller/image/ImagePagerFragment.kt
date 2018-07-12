@@ -29,13 +29,13 @@ class ImagePagerFragment : BaseFragment(), ImagePagerContract.View {
         handleError(error)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        inflater?.let { binding = FragmentImagePagerBinding.inflate(it, container, false) }
+        inflater.let { binding = FragmentImagePagerBinding.inflate(it, container, false) }
         return binding.root
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = ImagePagerAdapter(childFragmentManager)
